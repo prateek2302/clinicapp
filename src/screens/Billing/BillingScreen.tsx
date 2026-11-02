@@ -1,10 +1,14 @@
 
 import React, { useState } from 'react';
-import { View, Text, FlatList, StyleSheet, TouchableOpacity, Alert, Modal, ScrollView } from 'react-native';
+import { View, Text, FlatList, StyleSheet, TouchableOpacity, Alert, Modal } from 'react-native';
 import { Header } from '../../components/Header';
 import { Card } from '../../components/Card';
 import { colors, spacing, radius } from '../../theme';
-import { payWithRazorpay, payWithUPI } from '../../utils/payment';
+import {
+  payWithRazorpay,
+  payWithUPI,
+  payWithUPIApp,
+} from '../../utils/payment';
 import { UPIQRCode } from '../../components/UPIQRCode';
 import { sendBillOnWhatsApp } from '../../utils/whatsapp';
 
@@ -70,6 +74,27 @@ export default function BillingScreen(){
             <TouchableOpacity style={[styles.modalBtn,{backgroundColor:'#0F172A'}]} onPress={()=> { if(showPay){ payWithUPI(showPay.amount); setShowPay(null);} }}>
               <Text style={{color:'#fff', fontWeight:'800'}}>Pay via UPI Intent</Text>
             </TouchableOpacity>
+            <Text style={styles.upiLabel}>Choose a payment app</Text>
+            <View style={styles.upiApps}>
+              {([
+                ['gpay', 'Google Pay'],
+                ['phonepe', 'PhonePe'],
+                ['paytm', 'Paytm'],
+              ] as const).map(([app, label]) => (
+                <TouchableOpacity
+                  key={app}
+                  style={styles.upiApp}
+                  onPress={() => {
+                    if (showPay) {
+                      payWithUPIApp(app, showPay.amount);
+                      setShowPay(null);
+                    }
+                  }}
+                >
+                  <Text style={styles.upiAppText}>{label}</Text>
+                </TouchableOpacity>
+              ))}
+            </View>
             <TouchableOpacity style={[styles.modalBtn,{backgroundColor:colors.muted}]} onPress={()=>{ if(showPay) setInvoices(prev=>prev.map(x=> x.id===showPay.id ? {...x, status:'paid'}:x)); setShowPay(null); }}>
               <Text style={{fontWeight:'700'}}>Mark as Cash Paid</Text>
             </TouchableOpacity>
@@ -104,5 +129,9 @@ const styles = StyleSheet.create({
   payText:{ fontSize:12, fontWeight:'700', color:colors.primary },
   modalBg:{ flex:1, backgroundColor:'rgba(0,0,0,0.5)', justifyContent:'flex-end' },
   modalCard:{ backgroundColor:colors.card, borderTopLeftRadius:24, borderTopRightRadius:24, padding:spacing.lg },
-  modalBtn:{ padding:16, borderRadius:radius.md, alignItems:'center', marginTop:12 }
+  modalBtn:{ padding:16, borderRadius:radius.md, alignItems:'center', marginTop:12 },
+  upiLabel:{ color:colors.textLight, fontSize:12, fontWeight:'700', marginTop:16 },
+  upiApps:{ flexDirection:'row', gap:8, marginTop:8 },
+  upiApp:{ flex:1, backgroundColor:'#F0FDF4', borderRadius:radius.md, padding:12, alignItems:'center' },
+  upiAppText:{ color:'#15803D', fontSize:11, fontWeight:'800' },
 });

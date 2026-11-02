@@ -30,6 +30,68 @@ export const payWithUPI = (amount:number, upiId:string='clinic@upi', name:string
   Linking.openURL(upiUrl).catch(()=> Alert.alert('UPI app not found','Please install GPay / PhonePe / Paytm'));
 };
 
+type UPIApp = 'gpay' | 'phonepe' | 'paytm';
+
+const UPI_APP_DETAILS: Record<
+  UPIApp,
+  { scheme: string; packageName: string; label: string }
+> = {
+  gpay: {
+    scheme: 'gpay',
+    packageName: 'com.google.android.apps.nbu.paisa.user',
+    label: 'Google Pay',
+  },
+  phonepe: {
+    scheme: 'phonepe',
+    packageName: 'com.phonepe.app',
+    label: 'PhonePe',
+  },
+  paytm: {
+    scheme: 'paytmmp',
+    packageName: 'net.one97.paytm',
+    label: 'Paytm',
+  },
+};
+
+export const payWithUPIApp = async (
+  app: UPIApp,
+  amount: number,
+  upiId: string = 'clinic@upi',
+  name: string = 'ClinicApp',
+) => {
+  const details = UPI_APP_DETAILS[app];
+  const query = `pa=${encodeURIComponent(upiId)}&pn=${encodeURIComponent(
+    name,
+  )}&am=${amount}&cu=INR&tn=Clinic%20Bill%20Payment`;
+  const appUrl = `${details.scheme}://upi/pay?${query}`;
+
+  try {
+    if (await Linking.canOpenURL(appUrl)) {
+      await Linking.openURL(appUrl);
+      return;
+    }
+
+    Alert.alert(
+      `${details.label} is not installed`,
+      `Install ${details.label} to continue with this payment.`,
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Install',
+          onPress: () =>
+            Linking.openURL(
+              `https://play.google.com/store/apps/details?id=${details.packageName}`,
+            ).catch(() =>
+              Alert.alert('Unable to open store', 'Please install the app manually.'),
+            ),
+        },
+      ],
+    );
+  } catch {
+    Alert.alert('Payment app unavailable', `Unable to open ${details.label}.`);
+  }
+};
+
 export const generateUPIQRData = (amount:number, upiId:string='clinic@upi') => {
   return `upi://pay?pa=${upiId}&pn=ClinicApp&am=${amount}&cu=INR`;
 };
