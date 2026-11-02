@@ -6,7 +6,7 @@ import {
   TextInput,
   TouchableOpacity,
 } from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
+import { AppIcon } from '../../components/AppIcon';
 import { colors, spacing, radius } from '../../theme';
 import { useAuthStore } from '../../store/useAuthStore';
 
@@ -15,7 +15,7 @@ export default function LoginScreen() {
   return (
     <View style={styles.container}>
       <View style={styles.logoMark}>
-        <Icon name="medical" size={34} color={colors.inkOnPrimary} />
+        <AppIcon name="medical" size={34} color={colors.inkOnPrimary} />
       </View>
       <Text style={styles.logo}>
         Clinic<Text style={styles.logoAccent}>App</Text>

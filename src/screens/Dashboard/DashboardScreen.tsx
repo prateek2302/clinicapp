@@ -6,7 +6,7 @@ import {
   StyleSheet,
   TouchableOpacity,
 } from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
+import { AppIcon, AppIconName } from '../../components/AppIcon';
 import { Header } from '../../components/Header';
 import { Card } from '../../components/Card';
 import { colors, spacing, radius } from '../../theme';
@@ -18,14 +18,14 @@ const Metric = ({
   label,
   tint,
 }: {
-  icon: string;
+  icon: AppIconName;
   value: string;
   label: string;
   tint: string;
 }) => (
   <Card style={styles.metric}>
     <View style={[styles.metricIcon, { backgroundColor: tint + '18' }]}>
-      <Icon name={icon} size={18} color={tint} />
+      <AppIcon name={icon} size={18} color={tint} />
     </View>
     <Text style={styles.metricValue}>{value}</Text>
     <Text style={styles.metricLabel}>{label}</Text>
@@ -49,7 +49,7 @@ export default function DashboardScreen() {
           </Text>
         </View>
         <View style={styles.heroIcon}>
-          <Icon name="pulse" size={38} color={colors.accent} />
+          <AppIcon name="pulse" size={38} color={colors.accent} />
         </View>
       </View>
 
@@ -59,13 +59,13 @@ export default function DashboardScreen() {
       </View>
       <View style={styles.metricsRow}>
         <Metric
-          icon="people-outline"
+          icon="people"
           value={`${patients.length * 12}`}
           label="Total patients"
           tint={colors.primary}
         />
         <Metric
-          icon="calendar-outline"
+          icon="calendar"
           value={`${appointments.length}`}
           label="Appointments"
           tint="#D97706"
@@ -73,13 +73,13 @@ export default function DashboardScreen() {
       </View>
       <View style={styles.metricsRow}>
         <Metric
-          icon="medkit-outline"
+          icon="medkit"
           value={`${doctors.filter(d => d.available).length}`}
           label="Doctors online"
           tint={colors.success}
         />
         <Metric
-          icon="wallet-outline"
+          icon="wallet"
           value="₹18.5k"
           label="Today's revenue"
           tint="#B05FC2"
@@ -113,7 +113,7 @@ export default function DashboardScreen() {
               {appointment.doctorName} · {appointment.type}
             </Text>
           </View>
-          <Icon name="chevron-forward" size={18} color={colors.textLight} />
+          <AppIcon name="chevron" size={18} color={colors.textLight} />
         </Card>
       ))}
     </ScrollView>

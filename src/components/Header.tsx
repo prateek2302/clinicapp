@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
+import { AppIcon } from './AppIcon';
 import { colors, spacing } from '../theme';
 export const Header = ({
   title,
@@ -12,14 +12,14 @@ export const Header = ({
   <View style={styles.wrap}>
     <View style={styles.titleRow}>
       <View style={styles.brandMark}>
-        <Icon name="medical" size={18} color={colors.inkOnPrimary} />
+        <AppIcon name="medical" size={18} color={colors.inkOnPrimary} />
       </View>
       <View style={styles.titleCopy}>
         <Text style={styles.title}>{title}</Text>
         {subtitle && <Text style={styles.sub}>{subtitle}</Text>}
       </View>
       <View style={styles.notification}>
-        <Icon name="notifications-outline" size={21} color={colors.text} />
+        <AppIcon name="notifications" size={21} color={colors.text} />
       </View>
     </View>
   </View>
