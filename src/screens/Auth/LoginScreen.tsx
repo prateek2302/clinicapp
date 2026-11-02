@@ -15,7 +15,7 @@ export default function LoginScreen() {
   return (
     <View style={styles.container}>
       <View style={styles.logoMark}>
-        <AppIcon name="medical" size={34} color={colors.inkOnPrimary} />
+        <AppIcon name="clinic" size={36} color={colors.inkOnPrimary} />
       </View>
       <Text style={styles.logo}>
         Clinic<Text style={styles.logoAccent}>App</Text>

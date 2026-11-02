@@ -16,7 +16,7 @@ export const Header = ({
     <View style={[styles.wrap, { paddingTop: insets.top + spacing.sm }]}>
       <View style={styles.titleRow}>
         <View style={styles.brandMark}>
-          <AppIcon name="medical" size={18} color={colors.inkOnPrimary} />
+          <AppIcon name="clinic" size={20} color={colors.inkOnPrimary} />
         </View>
         <View style={styles.titleCopy}>
           <Text style={styles.title}>{title}</Text>

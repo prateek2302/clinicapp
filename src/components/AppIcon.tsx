@@ -2,14 +2,15 @@ import React from 'react';
 import Svg, { Circle, Path, Rect } from 'react-native-svg';
 
 export type AppIconName =
-  | 'medical'
+  | 'clinic'
   | 'notifications'
   | 'people'
   | 'calendar'
   | 'medkit'
   | 'wallet'
   | 'pulse'
-  | 'chevron';
+  | 'chevron'
+  | 'plus';
 
 type AppIconProps = {
   name: AppIconName;
@@ -28,8 +29,11 @@ export const AppIcon = ({ name, size = 22, color }: AppIconProps) => {
 
   return (
     <Svg width={size} height={size} viewBox="0 0 24 24">
-      {name === 'medical' && (
-        <Path {...common} d="M12 5v14M5 12h14" strokeWidth={2.6} />
+      {name === 'clinic' && (
+        <>
+          <Path {...common} d="M4 20V8l8-4 8 4v12" />
+          <Path {...common} d="M9 20v-4h6v4M8 10h8M12 8v4M10 10h4" />
+        </>
       )}
       {name === 'notifications' && (
         <>
@@ -79,6 +83,9 @@ export const AppIcon = ({ name, size = 22, color }: AppIconProps) => {
         <Path {...common} d="M3 12h4l2-5 4 10 2-5h6" strokeWidth={2} />
       )}
       {name === 'chevron' && <Path {...common} d="m9 5 7 7-7 7" />}
+      {name === 'plus' && (
+        <Path {...common} d="M12 5v14M5 12h14" strokeWidth={2.2} />
+      )}
     </Svg>
   );
 };
