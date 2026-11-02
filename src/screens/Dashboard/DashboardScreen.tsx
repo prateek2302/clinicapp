@@ -32,7 +32,7 @@ const Metric = ({
   </Card>
 );
 
-export default function DashboardScreen() {
+export default function DashboardScreen({ navigation }: any) {
   return (
     <ScrollView
       style={styles.screen}
@@ -88,7 +88,11 @@ export default function DashboardScreen() {
 
       <View style={[styles.sectionHeader, { marginTop: 10 }]}>
         <Text style={styles.sectionTitle}>Upcoming appointments</Text>
-        <TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => navigation.navigate('Patients')}
+          accessibilityRole="button"
+          accessibilityLabel="View all patients"
+        >
           <Text style={styles.viewAll}>View all</Text>
         </TouchableOpacity>
       </View>
@@ -108,7 +112,23 @@ export default function DashboardScreen() {
                 <Text style={styles.statusText}>{appointment.status}</Text>
               </View>
             </View>
-            <Text style={styles.patient}>{appointment.patientName}</Text>
+            <TouchableOpacity
+              onPress={() => {
+                const patient = patients.find(
+                  item => item.name === appointment.patientName,
+                );
+                if (patient) {
+                  navigation.navigate('Patients', {
+                    screen: 'PatientDetails',
+                    params: { patient },
+                  });
+                }
+              }}
+              accessibilityRole="button"
+              accessibilityLabel={`View ${appointment.patientName} details`}
+            >
+              <Text style={styles.patient}>{appointment.patientName}</Text>
+            </TouchableOpacity>
             <Text style={styles.doctor}>
               {appointment.doctorName} · {appointment.type}
             </Text>

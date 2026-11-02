@@ -4,7 +4,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { colors, spacing, radius } from '../../theme';
 import { useAuthStore } from '../../store/useAuthStore';
 
-export default function ProfileScreen() {
+export default function ProfileScreen({ navigation }: any) {
   const logout = useAuthStore(s => s.logout);
   const insets = useSafeAreaInsets();
   return (
@@ -12,14 +12,23 @@ export default function ProfileScreen() {
       <Text style={styles.title}>Clinic Admin</Text>
       <Text style={styles.sub}>admin@clinicapp.com • Receptionist</Text>
       <View style={styles.menu}>
-        <TouchableOpacity style={styles.item}>
-          <Text>⚙️ Settings</Text>
+        <TouchableOpacity
+          style={styles.item}
+          onPress={() => navigation.navigate('Settings')}
+        >
+          <Text style={styles.itemText}>Settings</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.item}>
-          <Text>💳 Billing & Invoices</Text>
+        <TouchableOpacity
+          style={styles.item}
+          onPress={() => navigation.navigate('BillingInvoices')}
+        >
+          <Text style={styles.itemText}>Billing & Invoices</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.item}>
-          <Text>🔒 Privacy Policy</Text>
+        <TouchableOpacity
+          style={styles.item}
+          onPress={() => navigation.navigate('PrivacyPolicy')}
+        >
+          <Text style={styles.itemText}>Privacy Policy</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={[styles.item, { marginTop: 24, backgroundColor: '#FEE2E2' }]}
@@ -42,6 +51,7 @@ const styles = StyleSheet.create({
   title: { fontSize: 24, fontWeight: '800', color: colors.text },
   sub: { color: colors.textLight, marginTop: 4 },
   menu: { marginTop: 32 },
+  itemText: { color: colors.text, fontSize: 14, fontWeight: '700' },
   item: {
     backgroundColor: colors.card,
     padding: 16,

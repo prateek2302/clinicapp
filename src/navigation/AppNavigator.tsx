@@ -9,10 +9,13 @@ import { colors } from '../theme';
 import LoginScreen from '../screens/Auth/LoginScreen';
 import DashboardScreen from '../screens/Dashboard/DashboardScreen';
 import PatientsScreen from '../screens/Patients/PatientsScreen';
+import PatientDetailsScreen from '../screens/Patients/PatientDetailsScreen';
 import AppointmentsScreen from '../screens/Appointments/UpdatedAppointmentsScreen';
 import BookAppointmentScreen from '../screens/Appointments/BookAppointmentScreen';
 import DoctorsScreen from '../screens/Doctors/DoctorsScreen';
 import ProfileScreen from '../screens/Profile/ProfileScreen';
+import SettingsScreen from '../screens/Profile/SettingsScreen';
+import PrivacyPolicyScreen from '../screens/Profile/PrivacyPolicyScreen';
 import BillingScreen from '../screens/Billing/BillingScreen';
 import PrescriptionScreen from '../screens/Prescription/PrescriptionScreen';
 
@@ -119,13 +122,22 @@ const MainTabs = () => (
     />
     <Tab.Screen
       name="Patients"
-      component={PatientsScreen}
       options={{
         tabBarIcon: ({ color, size }) => (
           <TabIcon name="patients" color={color} size={size} />
         ),
       }}
-    />
+    >
+      {() => (
+        <Stack.Navigator screenOptions={{ headerShown: false }}>
+          <Stack.Screen name="PatientsList" component={PatientsScreen} />
+          <Stack.Screen
+            name="PatientDetails"
+            component={PatientDetailsScreen}
+          />
+        </Stack.Navigator>
+      )}
+    </Tab.Screen>
     <Tab.Screen
       name="AppointmentsTab"
       options={{
@@ -160,13 +172,21 @@ const MainTabs = () => (
     />
     <Tab.Screen
       name="Profile"
-      component={ProfileScreen}
       options={{
         tabBarIcon: ({ color, size }) => (
           <TabIcon name="profile" color={color} size={size} />
         ),
       }}
-    />
+    >
+      {() => (
+        <Stack.Navigator screenOptions={{ headerShown: false }}>
+          <Stack.Screen name="ProfileHome" component={ProfileScreen} />
+          <Stack.Screen name="Settings" component={SettingsScreen} />
+          <Stack.Screen name="BillingInvoices" component={BillingScreen} />
+          <Stack.Screen name="PrivacyPolicy" component={PrivacyPolicyScreen} />
+        </Stack.Navigator>
+      )}
+    </Tab.Screen>
   </Tab.Navigator>
 );
 
