@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { AppIcon } from './AppIcon';
 import { colors, spacing } from '../theme';
 export const Header = ({
@@ -8,26 +9,29 @@ export const Header = ({
 }: {
   title: string;
   subtitle?: string;
-}) => (
-  <View style={styles.wrap}>
-    <View style={styles.titleRow}>
-      <View style={styles.brandMark}>
-        <AppIcon name="medical" size={18} color={colors.inkOnPrimary} />
-      </View>
-      <View style={styles.titleCopy}>
-        <Text style={styles.title}>{title}</Text>
-        {subtitle && <Text style={styles.sub}>{subtitle}</Text>}
-      </View>
-      <View style={styles.notification}>
-        <AppIcon name="notifications" size={21} color={colors.text} />
+}) => {
+  const insets = useSafeAreaInsets();
+
+  return (
+    <View style={[styles.wrap, { paddingTop: insets.top + spacing.sm }]}>
+      <View style={styles.titleRow}>
+        <View style={styles.brandMark}>
+          <AppIcon name="medical" size={18} color={colors.inkOnPrimary} />
+        </View>
+        <View style={styles.titleCopy}>
+          <Text style={styles.title}>{title}</Text>
+          {subtitle && <Text style={styles.sub}>{subtitle}</Text>}
+        </View>
+        <View style={styles.notification}>
+          <AppIcon name="notifications" size={21} color={colors.text} />
+        </View>
       </View>
     </View>
-  </View>
-);
+  );
+};
 const styles = StyleSheet.create({
   wrap: {
     paddingHorizontal: spacing.lg,
-    paddingTop: spacing.lg,
     paddingBottom: spacing.md,
   },
   titleRow: { flexDirection: 'row', alignItems: 'center' },
