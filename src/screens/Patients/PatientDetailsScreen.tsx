@@ -5,6 +5,9 @@ import {
   Text,
   StyleSheet,
   TouchableOpacity,
+  Modal,
+  TextInput,
+  Alert,
 } from 'react-native';
 import { Header } from '../../components/Header';
 import { Card } from '../../components/Card';
@@ -13,7 +16,31 @@ import { colors, spacing, radius } from '../../theme';
 import { Patient } from '../../types';
 
 export default function PatientDetailsScreen({ route, navigation }: any) {
-  const patient = route.params?.patient as Patient;
+  const [patient, setPatient] = React.useState(
+    route.params?.patient as Patient,
+  );
+  const [editVisible, setEditVisible] = React.useState(false);
+  const [draft, setDraft] = React.useState(patient);
+
+  const openEditor = () => {
+    setDraft(patient);
+    setEditVisible(true);
+  };
+  const saveRecord = () => {
+    if (
+      !draft.name.trim() ||
+      !draft.phone.trim() ||
+      !draft.condition.trim() ||
+      !draft.lastVisit.trim() ||
+      !Number.isInteger(draft.age) ||
+      draft.age < 0
+    ) {
+      Alert.alert('Invalid record', 'Please complete all patient details.');
+      return;
+    }
+    setPatient(draft);
+    setEditVisible(false);
+  };
 
   return (
     <ScrollView style={styles.screen} contentContainerStyle={styles.content}>
@@ -70,11 +97,97 @@ export default function PatientDetailsScreen({ route, navigation }: any) {
           <AppIcon name="calendar" size={18} color="#FFFFFF" />
           <Text style={styles.primaryActionText}>Book appointment</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.secondaryAction}>
-          <Text style={styles.secondaryActionText}>Edit record</Text>
+        <TouchableOpacity
+          style={styles.secondaryAction}
+          onPress={openEditor}
+          accessibilityRole="button"
+          accessibilityLabel="Edit patient record"
+        >
+          <Text style={styles.secondaryActionText}>Edit Record</Text>
         </TouchableOpacity>
       </View>
+
+      <Modal
+        visible={editVisible}
+        transparent
+        animationType="slide"
+        onRequestClose={() => setEditVisible(false)}
+      >
+        <View style={styles.modalBackground}>
+          <View style={styles.modalCard}>
+            <Text style={styles.modalTitle}>Edit patient record</Text>
+            <Text style={styles.modalSubtitle}>
+              Update the patient information below.
+            </Text>
+            <EditField
+              label="Name"
+              value={draft.name}
+              onChangeText={value => setDraft({ ...draft, name: value })}
+            />
+            <EditField
+              label="Age"
+              value={String(draft.age)}
+              keyboardType="number-pad"
+              onChangeText={value =>
+                setDraft({ ...draft, age: Number(value) || 0 })
+              }
+            />
+            <EditField
+              label="Phone"
+              value={draft.phone}
+              keyboardType="phone-pad"
+              onChangeText={value => setDraft({ ...draft, phone: value })}
+            />
+            <EditField
+              label="Condition"
+              value={draft.condition}
+              onChangeText={value => setDraft({ ...draft, condition: value })}
+            />
+            <EditField
+              label="Last visit"
+              value={draft.lastVisit}
+              onChangeText={value => setDraft({ ...draft, lastVisit: value })}
+            />
+            <View style={styles.modalActions}>
+              <TouchableOpacity
+                onPress={() => setEditVisible(false)}
+                style={styles.cancelButton}
+              >
+                <Text style={styles.cancelText}>Cancel</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={saveRecord} style={styles.saveButton}>
+                <Text style={styles.saveText}>Save changes</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </ScrollView>
+  );
+}
+
+function EditField({
+  label,
+  value,
+  onChangeText,
+  keyboardType = 'default',
+}: {
+  label: string;
+  value: string;
+  onChangeText: (value: string) => void;
+  keyboardType?: 'default' | 'number-pad' | 'phone-pad';
+}) {
+  return (
+    <View style={styles.editField}>
+      <Text style={styles.editLabel}>{label}</Text>
+      <TextInput
+        value={value}
+        onChangeText={onChangeText}
+        keyboardType={keyboardType}
+        style={styles.editInput}
+        placeholderTextColor={colors.textLight}
+      />
+    </View>
   );
 }
 
@@ -208,4 +321,42 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '800',
   },
+  modalBackground: {
+    flex: 1,
+    justifyContent: 'flex-end',
+    backgroundColor: 'rgba(16, 42, 67, 0.45)',
+  },
+  modalCard: {
+    backgroundColor: colors.card,
+    borderTopLeftRadius: radius.xl,
+    borderTopRightRadius: radius.xl,
+    padding: spacing.lg,
+  },
+  modalTitle: { color: colors.text, fontSize: 20, fontWeight: '800' },
+  modalSubtitle: { color: colors.textLight, fontSize: 12, marginTop: 4 },
+  editField: { marginTop: 12 },
+  editLabel: { color: colors.text, fontSize: 11, fontWeight: '700', marginBottom: 5 },
+  editInput: {
+    borderWidth: 1,
+    borderColor: colors.border,
+    borderRadius: radius.md,
+    color: colors.text,
+    padding: 11,
+    minHeight: 42,
+  },
+  modalActions: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    gap: 10,
+    marginTop: 22,
+  },
+  cancelButton: { paddingHorizontal: 14, paddingVertical: 12 },
+  cancelText: { color: colors.textLight, fontWeight: '700' },
+  saveButton: {
+    backgroundColor: colors.primary,
+    borderRadius: radius.md,
+    paddingHorizontal: 14,
+    paddingVertical: 12,
+  },
+  saveText: { color: '#FFFFFF', fontWeight: '800' },
 });
