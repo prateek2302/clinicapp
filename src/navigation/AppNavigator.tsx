@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
+import { Animated } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -22,6 +23,10 @@ import PrescriptionScreen from '../screens/Prescription/PrescriptionScreen';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
+const stackMotion = {
+  animation: 'fade_from_bottom' as const,
+  animationDuration: 260,
+};
 
 type TabIconName =
   | 'dashboard'
@@ -34,11 +39,24 @@ const TabIcon = ({
   name,
   color,
   size,
+  focused,
 }: {
   name: TabIconName;
   color: string;
   size: number;
+  focused: boolean;
 }) => {
+  const scale = useRef(new Animated.Value(focused ? 1 : 0.88)).current;
+
+  useEffect(() => {
+    Animated.spring(scale, {
+      toValue: focused ? 1 : 0.88,
+      useNativeDriver: true,
+      damping: 12,
+      stiffness: 180,
+    }).start();
+  }, [focused, scale]);
+
   const common = {
     fill: 'none' as const,
     stroke: color,
@@ -48,7 +66,8 @@ const TabIcon = ({
   };
 
   return (
-    <Svg width={size} height={size} viewBox="0 0 24 24">
+    <Animated.View style={{ transform: [{ scale }] }}>
+      <Svg width={size} height={size} viewBox="0 0 24 24">
       {name === 'dashboard' && (
         <>
           <Rect {...common} x="4" y="4" width="6" height="6" rx="1" />
@@ -91,7 +110,8 @@ const TabIcon = ({
           <Path {...common} d="M4.5 20c.8-3.5 3.3-5.5 7.5-5.5s6.7 2 7.5 5.5" />
         </>
       )}
-    </Svg>
+      </Svg>
+    </Animated.View>
   );
 };
 
@@ -99,6 +119,7 @@ const MainTabs = () => (
   <Tab.Navigator
     screenOptions={{
       headerShown: false,
+      ...stackMotion,
       tabBarActiveTintColor: colors.primary,
       tabBarInactiveTintColor: '#91A3B2',
       tabBarLabelStyle: { fontSize: 10, fontWeight: '700' },
@@ -116,21 +137,21 @@ const MainTabs = () => (
       name="Dashboard"
       component={DashboardScreen}
       options={{
-        tabBarIcon: ({ color, size }) => (
-          <TabIcon name="dashboard" color={color} size={size} />
+        tabBarIcon: ({ color, size, focused }) => (
+          <TabIcon name="dashboard" color={color} size={size} focused={focused} />
         ),
       }}
     />
     <Tab.Screen
       name="Patients"
       options={{
-        tabBarIcon: ({ color, size }) => (
-          <TabIcon name="patients" color={color} size={size} />
+        tabBarIcon: ({ color, size, focused }) => (
+          <TabIcon name="patients" color={color} size={size} focused={focused} />
         ),
       }}
     >
       {() => (
-        <Stack.Navigator screenOptions={{ headerShown: false }}>
+        <Stack.Navigator screenOptions={{ headerShown: false, ...stackMotion }}>
           <Stack.Screen name="PatientsList" component={PatientsScreen} />
           <Stack.Screen
             name="PatientDetails"
@@ -143,13 +164,13 @@ const MainTabs = () => (
       name="AppointmentsTab"
       options={{
         title: 'Appointments',
-        tabBarIcon: ({ color, size }) => (
-          <TabIcon name="appointments" color={color} size={size} />
+        tabBarIcon: ({ color, size, focused }) => (
+          <TabIcon name="appointments" color={color} size={size} focused={focused} />
         ),
       }}
     >
       {() => (
-        <Stack.Navigator screenOptions={{ headerShown: false }}>
+        <Stack.Navigator screenOptions={{ headerShown: false, ...stackMotion }}>
           <Stack.Screen
             name="AppointmentsList"
             component={AppointmentsScreen}
@@ -166,21 +187,21 @@ const MainTabs = () => (
       name="Billing"
       component={BillingScreen}
       options={{
-        tabBarIcon: ({ color, size }) => (
-          <TabIcon name="billing" color={color} size={size} />
+        tabBarIcon: ({ color, size, focused }) => (
+          <TabIcon name="billing" color={color} size={size} focused={focused} />
         ),
       }}
     />
     <Tab.Screen
       name="Profile"
       options={{
-        tabBarIcon: ({ color, size }) => (
-          <TabIcon name="profile" color={color} size={size} />
+        tabBarIcon: ({ color, size, focused }) => (
+          <TabIcon name="profile" color={color} size={size} focused={focused} />
         ),
       }}
     >
       {() => (
-        <Stack.Navigator screenOptions={{ headerShown: false }}>
+        <Stack.Navigator screenOptions={{ headerShown: false, ...stackMotion }}>
           <Stack.Screen name="ProfileHome" component={ProfileScreen} />
           <Stack.Screen name="Settings" component={SettingsScreen} />
           <Stack.Screen name="BillingInvoices" component={BillingScreen} />
@@ -195,7 +216,7 @@ export default function AppNavigator() {
   const isLoggedIn = useAuthStore(s => s.isLoggedIn);
   return (
     <NavigationContainer>
-      <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Navigator screenOptions={{ headerShown: false, ...stackMotion }}>
         {!isLoggedIn ? (
           <Stack.Group>
             <Stack.Screen name="Login" component={LoginScreen} />
