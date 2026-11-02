@@ -23,8 +23,10 @@ npm install
 cd ios && pod install && cd ..
 
 npm start
-# in another terminal
-npm run android / npm run ios
+# In another terminal, run one platform:
+npm run android
+# or
+npm run ios
 ```
 
 ## Folder Structure

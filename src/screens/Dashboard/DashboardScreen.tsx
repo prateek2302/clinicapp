@@ -5,6 +5,7 @@ import {
   Text,
   StyleSheet,
   TouchableOpacity,
+  Modal,
 } from 'react-native';
 import { AppIcon, AppIconName } from '../../components/AppIcon';
 import { Header } from '../../components/Header';
@@ -33,13 +34,72 @@ const Metric = ({
 );
 
 export default function DashboardScreen({ navigation }: any) {
+  const [alertsVisible, setAlertsVisible] = React.useState(false);
+
   return (
     <ScrollView
       style={styles.screen}
       contentContainerStyle={styles.content}
       showsVerticalScrollIndicator={false}
     >
-      <Header title="Good morning, Admin" subtitle="Monday, 2 November 2026" />
+      <Header
+        title="Good morning, Admin"
+        subtitle="Monday, 2 November 2026"
+        onBellPress={() => setAlertsVisible(true)}
+      />
+      <Modal
+        visible={alertsVisible}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setAlertsVisible(false)}
+      >
+        <TouchableOpacity
+          style={styles.alertBackdrop}
+          activeOpacity={1}
+          onPress={() => setAlertsVisible(false)}
+        >
+          <TouchableOpacity activeOpacity={1} style={styles.alertPanel}>
+            <View style={styles.alertHeader}>
+              <View>
+                <Text style={styles.alertTitle}>Appointment alerts</Text>
+                <Text style={styles.alertSubtitle}>
+                  Today’s upcoming schedule
+                </Text>
+              </View>
+              <TouchableOpacity
+                onPress={() => setAlertsVisible(false)}
+                accessibilityLabel="Close appointment alerts"
+              >
+                <Text style={styles.closeAlert}>×</Text>
+              </TouchableOpacity>
+            </View>
+            {appointments
+              .filter(item => item.status === 'upcoming')
+              .map(item => (
+                <View key={item.id} style={styles.alertItem}>
+                  <View style={styles.alertTime}>
+                    <Text style={styles.alertTimeText}>{item.time}</Text>
+                  </View>
+                  <View style={styles.alertCopy}>
+                    <Text style={styles.alertPatient}>{item.patientName}</Text>
+                    <Text style={styles.alertDoctor}>
+                      {item.doctorName} · {item.type}
+                    </Text>
+                  </View>
+                </View>
+              ))}
+            <TouchableOpacity
+              style={styles.alertAction}
+              onPress={() => {
+                setAlertsVisible(false);
+                navigation.navigate('AppointmentsTab');
+              }}
+            >
+              <Text style={styles.alertActionText}>Open appointments</Text>
+            </TouchableOpacity>
+          </TouchableOpacity>
+        </TouchableOpacity>
+      </Modal>
       <View style={styles.hero}>
         <View style={styles.heroCopy}>
           <Text style={styles.heroEyebrow}>TODAY AT A GLANCE</Text>
@@ -143,6 +203,54 @@ export default function DashboardScreen({ navigation }: any) {
 const styles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: colors.background },
   content: { paddingBottom: spacing.lg },
+  alertBackdrop: {
+    flex: 1,
+    backgroundColor: '#102A4388',
+    justifyContent: 'flex-start',
+    alignItems: 'flex-end',
+    paddingTop: 92,
+    paddingHorizontal: spacing.lg,
+  },
+  alertPanel: {
+    width: '100%',
+    backgroundColor: colors.card,
+    borderRadius: radius.lg,
+    padding: spacing.md,
+    shadowColor: colors.secondary,
+    shadowOpacity: 0.2,
+    shadowRadius: 16,
+    elevation: 8,
+  },
+  alertHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    marginBottom: 8,
+  },
+  alertTitle: { color: colors.text, fontSize: 17, fontWeight: '800' },
+  alertSubtitle: { color: colors.textLight, fontSize: 11, marginTop: 3 },
+  closeAlert: { color: colors.textLight, fontSize: 28, lineHeight: 24 },
+  alertItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 11,
+    borderTopWidth: 1,
+    borderTopColor: colors.border,
+  },
+  alertTime: { minWidth: 70 },
+  alertTimeText: { color: colors.primary, fontSize: 12, fontWeight: '800' },
+  alertCopy: { flex: 1 },
+  alertPatient: { color: colors.text, fontSize: 13, fontWeight: '800' },
+  alertDoctor: { color: colors.textLight, fontSize: 11, marginTop: 2 },
+  alertAction: {
+    backgroundColor: colors.primary,
+    borderRadius: radius.md,
+    minHeight: 42,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 8,
+  },
+  alertActionText: { color: '#FFFFFF', fontSize: 13, fontWeight: '800' },
   hero: {
     marginHorizontal: spacing.lg,
     padding: spacing.lg,

@@ -1,14 +1,16 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { AppIcon } from './AppIcon';
 import { colors, spacing } from '../theme';
 export const Header = ({
   title,
   subtitle,
+  onBellPress,
 }: {
   title: string;
   subtitle?: string;
+  onBellPress?: () => void;
 }) => {
   const insets = useSafeAreaInsets();
 
@@ -22,9 +24,15 @@ export const Header = ({
           <Text style={styles.title}>{title}</Text>
           {subtitle && <Text style={styles.sub}>{subtitle}</Text>}
         </View>
-        <View style={styles.notification}>
+        <TouchableOpacity
+          style={styles.notification}
+          onPress={onBellPress}
+          disabled={!onBellPress}
+          accessibilityRole={onBellPress ? 'button' : undefined}
+          accessibilityLabel="Notifications"
+        >
           <AppIcon name="notifications" size={21} color={colors.text} />
-        </View>
+        </TouchableOpacity>
       </View>
     </View>
   );

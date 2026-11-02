@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -10,8 +10,27 @@ import { AppIcon } from '../../components/AppIcon';
 import { colors, spacing, radius } from '../../theme';
 import { useAuthStore } from '../../store/useAuthStore';
 
+const DEMO_EMAIL = 'demo@clinicapp.com';
+const DEMO_PASSWORD = 'Clinic@123';
+
 export default function LoginScreen() {
   const login = useAuthStore(s => s.login);
+  const [email, setEmail] = useState(DEMO_EMAIL);
+  const [password, setPassword] = useState(DEMO_PASSWORD);
+  const [error, setError] = useState('');
+
+  const handleLogin = () => {
+    if (
+      email.trim().toLowerCase() !== DEMO_EMAIL ||
+      password !== DEMO_PASSWORD
+    ) {
+      setError('Use the demo email and password shown below.');
+      return;
+    }
+    setError('');
+    login();
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.logoMark}>
@@ -24,19 +43,34 @@ export default function LoginScreen() {
       <View style={styles.form}>
         <TextInput
           placeholder="Email"
+          value={email}
+          onChangeText={value => {
+            setEmail(value);
+            setError('');
+          }}
           style={styles.input}
           placeholderTextColor={colors.textLight}
         />
         <TextInput
           placeholder="Password"
+          value={password}
+          onChangeText={value => {
+            setPassword(value);
+            setError('');
+          }}
           secureTextEntry
           style={styles.input}
           placeholderTextColor={colors.textLight}
         />
-        <TouchableOpacity style={styles.btn} onPress={login}>
+        <TouchableOpacity style={styles.btn} onPress={handleLogin}>
           <Text style={styles.btnText}>Sign In</Text>
         </TouchableOpacity>
-        <Text style={styles.hint}>Demo: tap Sign In directly (no API yet)</Text>
+        <View style={styles.demoBox}>
+          <Text style={styles.demoLabel}>DEMO ACCESS</Text>
+          <Text style={styles.demoText}>{DEMO_EMAIL}</Text>
+          <Text style={styles.demoText}>{DEMO_PASSWORD}</Text>
+        </View>
+        {!!error && <Text style={styles.error}>{error}</Text>}
       </View>
     </View>
   );
@@ -99,5 +133,25 @@ const styles = StyleSheet.create({
     color: colors.textLight,
     marginTop: 12,
     fontSize: 12,
+  },
+  demoBox: {
+    marginTop: 16,
+    padding: 12,
+    borderRadius: radius.md,
+    backgroundColor: colors.muted,
+  },
+  demoLabel: {
+    color: colors.primary,
+    fontSize: 10,
+    fontWeight: '800',
+    letterSpacing: 1,
+    marginBottom: 5,
+  },
+  demoText: { color: colors.text, fontSize: 12, marginTop: 2 },
+  error: {
+    color: colors.danger,
+    fontSize: 12,
+    textAlign: 'center',
+    marginTop: 10,
   },
 });
