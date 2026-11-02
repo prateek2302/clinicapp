@@ -7,6 +7,7 @@ import { useAuthStore } from '../store/useAuthStore';
 import { colors } from '../theme';
 
 import LoginScreen from '../screens/Auth/LoginScreen';
+import SignUpScreen from '../screens/Auth/SignUpScreen';
 import DashboardScreen from '../screens/Dashboard/DashboardScreen';
 import PatientsScreen from '../screens/Patients/PatientsScreen';
 import PatientDetailsScreen from '../screens/Patients/PatientDetailsScreen';
@@ -196,7 +197,10 @@ export default function AppNavigator() {
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
         {!isLoggedIn ? (
-          <Stack.Screen name="Login" component={LoginScreen} />
+          <Stack.Group>
+            <Stack.Screen name="Login" component={LoginScreen} />
+            <Stack.Screen name="SignUp" component={SignUpScreen} />
+          </Stack.Group>
         ) : (
           <Stack.Screen name="Main" component={MainTabs} />
         )}

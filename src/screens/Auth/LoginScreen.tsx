@@ -13,7 +13,7 @@ import { useAuthStore } from '../../store/useAuthStore';
 const DEMO_EMAIL = 'demo@clinicapp.com';
 const DEMO_PASSWORD = 'Clinic@123';
 
-export default function LoginScreen() {
+export default function LoginScreen({ navigation }: any) {
   const login = useAuthStore(s => s.login);
   const [email, setEmail] = useState(DEMO_EMAIL);
   const [password, setPassword] = useState(DEMO_PASSWORD);
@@ -64,6 +64,13 @@ export default function LoginScreen() {
         />
         <TouchableOpacity style={styles.btn} onPress={handleLogin}>
           <Text style={styles.btnText}>Sign In</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.signUpLink}
+          onPress={() => navigation.navigate('SignUp')}
+        >
+          <Text style={styles.signUpPrompt}>Don't have an account? </Text>
+          <Text style={styles.signUpText}>Create one</Text>
         </TouchableOpacity>
         <View style={styles.demoBox}>
           <Text style={styles.demoLabel}>DEMO ACCESS</Text>
@@ -154,4 +161,11 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: 10,
   },
+  signUpLink: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginTop: 18,
+  },
+  signUpPrompt: { color: colors.textLight, fontSize: 12 },
+  signUpText: { color: colors.primary, fontSize: 12, fontWeight: '800' },
 });

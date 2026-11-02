@@ -193,7 +193,7 @@ export default function DashboardScreen({ navigation }: any) {
               {appointment.doctorName} · {appointment.type}
             </Text>
           </View>
-          <AppIcon name="chevron" size={18} color={colors.textLight} />
+          <AppIcon name="people" size={18} color={colors.textLight} />
         </Card>
       ))}
     </ScrollView>
