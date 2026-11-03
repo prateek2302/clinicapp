@@ -35,6 +35,12 @@ const Metric = ({
 
 export default function DashboardScreen({ navigation }: any) {
   const [alertsVisible, setAlertsVisible] = React.useState(false);
+  const completedAppointments = appointments.filter(
+    appointment => appointment.status === 'completed',
+  ).length;
+  const completionRate = Math.round(
+    (completedAppointments / appointments.length) * 100,
+  );
 
   return (
     <ScrollView
@@ -145,6 +151,31 @@ export default function DashboardScreen({ navigation }: any) {
           tint="#B05FC2"
         />
       </View>
+
+      <View style={styles.sectionHeader}>
+        <Text style={styles.sectionTitle}>Clinic pulse</Text>
+        <Text style={styles.updated}>Updated now</Text>
+      </View>
+      <Card style={styles.pulseCard}>
+        <View style={styles.pulseHeading}>
+          <View>
+            <Text style={styles.pulseTitle}>Today’s schedule</Text>
+            <Text style={styles.pulseSubtitle}>
+              {completedAppointments} of {appointments.length} appointments completed
+            </Text>
+          </View>
+          <Text style={styles.pulsePercent}>{completionRate}%</Text>
+        </View>
+        <View style={styles.progressTrack}>
+          <View style={[styles.progressFill, { width: `${completionRate}%` }]} />
+        </View>
+        <View style={styles.pulseFooter}>
+          <Text style={styles.pulseFooterText}>
+            {doctors.filter(doctor => doctor.available).length} doctors available
+          </Text>
+          <Text style={styles.pulseFooterText}>Average wait 12 min</Text>
+        </View>
+      </Card>
 
       <View style={[styles.sectionHeader, { marginTop: 10 }]}>
         <Text style={styles.sectionTitle}>Upcoming appointments</Text>
@@ -312,6 +343,33 @@ const styles = StyleSheet.create({
   },
   metricValue: { fontSize: 23, fontWeight: '800', color: colors.text },
   metricLabel: { fontSize: 11, color: colors.textLight, marginTop: 3 },
+  pulseCard: { marginHorizontal: spacing.lg, padding: 16 },
+  pulseHeading: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  pulseTitle: { color: colors.text, fontSize: 14, fontWeight: '800' },
+  pulseSubtitle: { color: colors.textLight, fontSize: 11, marginTop: 4 },
+  pulsePercent: { color: colors.primary, fontSize: 22, fontWeight: '900' },
+  progressTrack: {
+    height: 8,
+    borderRadius: 8,
+    backgroundColor: colors.muted,
+    overflow: 'hidden',
+    marginTop: 15,
+  },
+  progressFill: {
+    height: '100%',
+    borderRadius: 8,
+    backgroundColor: colors.primary,
+  },
+  pulseFooter: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 11,
+  },
+  pulseFooterText: { color: colors.textLight, fontSize: 10, fontWeight: '600' },
   appointment: {
     marginHorizontal: spacing.lg,
     marginBottom: 10,

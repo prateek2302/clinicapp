@@ -13,6 +13,11 @@ export default function AppointmentsScreen(){
   return (
     <View style={{flex:1, backgroundColor:colors.background}}>
       <Header title="Appointments" subtitle="Manage daily schedule" />
+      <View style={styles.summaryRow}>
+        <View><Text style={styles.summaryValue}>{appointments.length}</Text><Text style={styles.summaryLabel}>Total today</Text></View>
+        <View><Text style={[styles.summaryValue, {color:colors.success}]}>{appointments.filter(a=>a.status==='completed').length}</Text><Text style={styles.summaryLabel}>Completed</Text></View>
+        <View><Text style={[styles.summaryValue, {color:colors.warning}]}>{appointments.filter(a=>a.status==='upcoming').length}</Text><Text style={styles.summaryLabel}>Upcoming</Text></View>
+      </View>
       <View style={styles.tabRow}>
         {tabs.map(t=>(
           <TouchableOpacity key={t} onPress={()=>setTab(t)} style={[styles.tab, tab===t && styles.tabActive]}>
@@ -33,6 +38,9 @@ export default function AppointmentsScreen(){
   );
 }
 const styles = StyleSheet.create({
+  summaryRow:{ flexDirection:'row', justifyContent:'space-between', marginHorizontal:spacing.md, marginBottom:12, padding:16, borderRadius:16, backgroundColor:colors.card, borderWidth:1, borderColor:colors.border },
+  summaryValue:{ fontSize:20, fontWeight:'800', color:colors.primary },
+  summaryLabel:{ fontSize:10, color:colors.textLight, marginTop:2 },
   tabRow:{ flexDirection:'row', paddingHorizontal:spacing.md, gap:8, marginBottom:8 },
   tab:{ paddingHorizontal:14, paddingVertical:8, borderRadius:radius.md, backgroundColor:colors.muted },
   tabActive:{ backgroundColor:colors.primary },

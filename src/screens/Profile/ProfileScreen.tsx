@@ -9,8 +9,15 @@ export default function ProfileScreen({ navigation }: any) {
   const insets = useSafeAreaInsets();
   return (
     <View style={[styles.container, { paddingTop: insets.top + spacing.lg }]}>
-      <Text style={styles.title}>Clinic Admin</Text>
-      <Text style={styles.sub}>admin@clinicapp.com • Receptionist</Text>
+      <View style={styles.profileHero}>
+        <View style={styles.avatar}><Text style={styles.avatarText}>CA</Text></View>
+        <View>
+          <Text style={styles.title}>Clinic Admin</Text>
+          <Text style={styles.sub}>admin@clinicapp.com • Receptionist</Text>
+          <View style={styles.activeBadge}><View style={styles.activeDot} /><Text style={styles.activeText}>Active account</Text></View>
+        </View>
+      </View>
+      <Text style={styles.sectionLabel}>WORKSPACE</Text>
       <View style={styles.menu}>
         <TouchableOpacity
           style={styles.item}
@@ -50,6 +57,13 @@ const styles = StyleSheet.create({
   },
   title: { fontSize: 24, fontWeight: '800', color: colors.text },
   sub: { color: colors.textLight, marginTop: 4 },
+  profileHero: { flexDirection: 'row', alignItems: 'center', backgroundColor: colors.card, padding: 16, borderRadius: radius.lg, borderWidth: 1, borderColor: colors.border },
+  avatar: { width: 58, height: 58, borderRadius: 20, backgroundColor: colors.primary, alignItems: 'center', justifyContent: 'center', marginRight: 13 },
+  avatarText: { color: '#fff', fontSize: 20, fontWeight: '800' },
+  activeBadge: { flexDirection: 'row', alignItems: 'center', marginTop: 8 },
+  activeDot: { width: 7, height: 7, borderRadius: 4, backgroundColor: colors.success, marginRight: 5 },
+  activeText: { color: colors.success, fontSize: 10, fontWeight: '700' },
+  sectionLabel: { color: colors.textLight, fontSize: 10, fontWeight: '800', letterSpacing: 1, marginTop: 26 },
   menu: { marginTop: 32 },
   itemText: { color: colors.text, fontSize: 14, fontWeight: '700' },
   item: {

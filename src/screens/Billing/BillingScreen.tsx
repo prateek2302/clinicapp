@@ -38,6 +38,13 @@ export default function BillingScreen(){
   return (
     <View style={{flex:1, backgroundColor:colors.background}}>
       <Header title="Billing & Payments" subtitle={`Paid: ₹${totalPaid} | Pending: ₹${invoices.filter(i=>i.status!=='paid').reduce((s,i)=>s+i.amount,0)}`} />
+      <View style={styles.revenueCard}>
+        <View>
+          <Text style={styles.revenueLabel}>COLLECTIONS THIS MONTH</Text>
+          <Text style={styles.revenueAmount}>₹{totalPaid.toLocaleString('en-IN')}</Text>
+        </View>
+        <Text style={styles.revenueCount}>{invoices.filter(i=>i.status==='paid').length} paid</Text>
+      </View>
       <View style={styles.filterRow}>
         {(['all','paid','pending','overdue'] as const).map(f=>(
           <TouchableOpacity key={f} onPress={()=>setFilter(f)} style={[styles.filter, filter===f && styles.filterActive]}>
@@ -118,6 +125,10 @@ export default function BillingScreen(){
   );
 }
 const styles = StyleSheet.create({
+  revenueCard:{ marginHorizontal:spacing.md, marginBottom:12, padding:16, borderRadius:16, backgroundColor:colors.secondary, flexDirection:'row', justifyContent:'space-between', alignItems:'center' },
+  revenueLabel:{ color:'#8CCAC5', fontSize:10, fontWeight:'800', letterSpacing:1 },
+  revenueAmount:{ color:'#fff', fontSize:24, fontWeight:'800', marginTop:4 },
+  revenueCount:{ color:colors.accent, fontSize:13, fontWeight:'800' },
   filterRow:{ flexDirection:'row', paddingHorizontal:spacing.md, gap:8, marginBottom:8 },
   filter:{ paddingHorizontal:14, paddingVertical:8, borderRadius:20, backgroundColor:colors.muted },
   filterActive:{ backgroundColor:colors.secondary },
