@@ -68,48 +68,54 @@ const TabIcon = ({
   return (
     <Animated.View style={{ transform: [{ scale }] }}>
       <Svg width={size} height={size} viewBox="0 0 24 24">
-      {name === 'dashboard' && (
-        <>
-          <Rect {...common} x="4" y="4" width="6" height="6" rx="1" />
-          <Rect {...common} x="14" y="4" width="6" height="6" rx="1" />
-          <Rect {...common} x="4" y="14" width="6" height="6" rx="1" />
-          <Rect {...common} x="14" y="14" width="6" height="6" rx="1" />
-        </>
-      )}
-      {name === 'patients' && (
-        <>
-          <Circle {...common} cx="9" cy="8" r="3" />
-          <Path {...common} d="M3.5 19c.6-3 2.4-4.5 5.5-4.5s4.9 1.5 5.5 4.5" />
-          <Path
-            {...common}
-            d="M16 5.5a3 3 0 0 1 0 5.8M16 14.5c2.5.2 4 1.7 4.5 4.5"
-          />
-        </>
-      )}
-      {name === 'appointments' && (
-        <>
-          <Rect {...common} x="4" y="5.5" width="16" height="15" rx="2" />
-          <Path
-            {...common}
-            d="M8 3.5v4M16 3.5v4M4 10h16M8 14h.01M12 14h.01M16 14h.01M8 17.5h.01M12 17.5h.01"
-          />
-        </>
-      )}
-      {name === 'billing' && (
-        <>
-          <Path
-            {...common}
-            d="M6 3.5h12a2 2 0 0 1 2 2v15l-3.5-2-3.5 2-3.5-2-3.5 2v-15a2 2 0 0 1 2-2Z"
-          />
-          <Path {...common} d="M8 8h8M8 12h8M8 16h4" />
-        </>
-      )}
-      {name === 'profile' && (
-        <>
-          <Circle {...common} cx="12" cy="8" r="3.5" />
-          <Path {...common} d="M4.5 20c.8-3.5 3.3-5.5 7.5-5.5s6.7 2 7.5 5.5" />
-        </>
-      )}
+        {name === 'dashboard' && (
+          <>
+            <Rect {...common} x="4" y="4" width="6" height="6" rx="1" />
+            <Rect {...common} x="14" y="4" width="6" height="6" rx="1" />
+            <Rect {...common} x="4" y="14" width="6" height="6" rx="1" />
+            <Rect {...common} x="14" y="14" width="6" height="6" rx="1" />
+          </>
+        )}
+        {name === 'patients' && (
+          <>
+            <Circle {...common} cx="9" cy="8" r="3" />
+            <Path
+              {...common}
+              d="M3.5 19c.6-3 2.4-4.5 5.5-4.5s4.9 1.5 5.5 4.5"
+            />
+            <Path
+              {...common}
+              d="M16 5.5a3 3 0 0 1 0 5.8M16 14.5c2.5.2 4 1.7 4.5 4.5"
+            />
+          </>
+        )}
+        {name === 'appointments' && (
+          <>
+            <Rect {...common} x="4" y="5.5" width="16" height="15" rx="2" />
+            <Path
+              {...common}
+              d="M8 3.5v4M16 3.5v4M4 10h16M8 14h.01M12 14h.01M16 14h.01M8 17.5h.01M12 17.5h.01"
+            />
+          </>
+        )}
+        {name === 'billing' && (
+          <>
+            <Path
+              {...common}
+              d="M6 3.5h12a2 2 0 0 1 2 2v15l-3.5-2-3.5 2-3.5-2-3.5 2v-15a2 2 0 0 1 2-2Z"
+            />
+            <Path {...common} d="M8 8h8M8 12h8M8 16h4" />
+          </>
+        )}
+        {name === 'profile' && (
+          <>
+            <Circle {...common} cx="12" cy="8" r="3.5" />
+            <Path
+              {...common}
+              d="M4.5 20c.8-3.5 3.3-5.5 7.5-5.5s6.7 2 7.5 5.5"
+            />
+          </>
+        )}
       </Svg>
     </Animated.View>
   );
@@ -138,15 +144,31 @@ const MainTabs = () => (
       component={DashboardScreen}
       options={{
         tabBarIcon: ({ color, size, focused }) => (
-          <TabIcon name="dashboard" color={color} size={size} focused={focused} />
+          <TabIcon
+            name="dashboard"
+            color={color}
+            size={size}
+            focused={focused}
+          />
         ),
       }}
     />
     <Tab.Screen
       name="Patients"
+      listeners={({ navigation }) => ({
+        tabPress: event => {
+          event.preventDefault();
+          navigation.navigate('Patients', { screen: 'PatientsList' });
+        },
+      })}
       options={{
         tabBarIcon: ({ color, size, focused }) => (
-          <TabIcon name="patients" color={color} size={size} focused={focused} />
+          <TabIcon
+            name="patients"
+            color={color}
+            size={size}
+            focused={focused}
+          />
         ),
       }}
     >
@@ -165,7 +187,12 @@ const MainTabs = () => (
       options={{
         title: 'Appointments',
         tabBarIcon: ({ color, size, focused }) => (
-          <TabIcon name="appointments" color={color} size={size} focused={focused} />
+          <TabIcon
+            name="appointments"
+            color={color}
+            size={size}
+            focused={focused}
+          />
         ),
       }}
     >
