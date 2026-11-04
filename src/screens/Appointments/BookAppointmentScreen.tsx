@@ -12,6 +12,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { colors, spacing, radius } from '../../theme';
 import { Card } from '../../components/Card';
 import { patients, doctors } from '../../utils/mockData';
+import { api } from '../../utils/api';
 
 const timeSlots = [
   '09:00 AM',
@@ -34,6 +35,7 @@ export default function BookAppointmentScreen({ navigation }: any) {
   const [selectedTime, setSelectedTime] = useState('10:30 AM');
   const [type, setType] = useState('Consultation');
   const [notes, setNotes] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const dates = Array.from({ length: 7 }, (_, i) => {
     const d = new Date();
@@ -45,12 +47,29 @@ export default function BookAppointmentScreen({ navigation }: any) {
     };
   });
 
-  const handleBook = () => {
-    Alert.alert(
-      'Success',
-      `Appointment booked for ${selectedPatient} with ${selectedDoctor} on ${dates[selectedDate].full} at ${selectedTime}`,
-      [{ text: 'OK', onPress: () => navigation.goBack() }],
-    );
+  const handleBook = async () => {
+    setLoading(true);
+    try {
+      await api.createAppointment({
+        patientName: selectedPatient,
+        doctorName: selectedDoctor,
+        time: selectedTime,
+        date: dates[selectedDate].full,
+        type,
+      });
+      Alert.alert(
+        'Success',
+        `Appointment booked for ${selectedPatient} with ${selectedDoctor} on ${dates[selectedDate].full} at ${selectedTime}`,
+        [{ text: 'OK', onPress: () => navigation.goBack() }],
+      );
+    } catch (error) {
+      Alert.alert(
+        'Unable to book appointment',
+        error instanceof Error ? error.message : 'Please try again.',
+      );
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -197,7 +216,9 @@ export default function BookAppointmentScreen({ navigation }: any) {
       </Card>
 
       <TouchableOpacity style={styles.bookBtn} onPress={handleBook}>
-        <Text style={styles.bookText}>Confirm & Book - ₹500</Text>
+        <Text style={styles.bookText}>
+          {loading ? 'Booking...' : 'Confirm & Book - ₹500'}
+        </Text>
       </TouchableOpacity>
     </ScrollView>
   );

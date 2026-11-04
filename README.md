@@ -1,6 +1,7 @@
 # ClinicApp - React Native CLI
 
-Production-ready clinic management app scaffold.
+Full-stack clinic management app with a React Native client and a small Node.js
+API for authentication, patients, and appointments.
 
 ## Features
 - Auth (Login / Role: Doctor, Receptionist, Patient)
@@ -29,6 +30,31 @@ npm run android
 # or
 npm run ios
 ```
+
+### Run the API
+
+The API uses the JSON file at `server/data.json` as a local development
+database, so no database service is required to get started:
+
+```bash
+npm run api
+```
+
+It listens on `http://localhost:4000`. The mobile app uses `localhost` on iOS
+and `10.0.2.2` on the Android emulator. For a physical device, update
+`API_BASE_URL` in `src/utils/api.ts` to the computer's LAN IP address.
+
+Available endpoints:
+
+- `GET /health`
+- `POST /api/auth/login`
+- `GET /api/patients?q=...`
+- `POST /api/patients`
+- `GET /api/appointments`
+- `POST /api/appointments`
+
+The demo account is `demo@clinicapp.com` / `Clinic@123`. Replace the local
+JSON store with a real database and hash passwords before production use.
 
 ## Folder Structure
 /src

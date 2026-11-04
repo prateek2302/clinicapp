@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -11,13 +11,21 @@ import { Card } from '../../components/Card';
 import { AppIcon } from '../../components/AppIcon';
 import { colors, spacing, radius } from '../../theme';
 import { appointments } from '../../utils/mockData';
+import { Appointment } from '../../types';
+import { api } from '../../utils/api';
 
 const tabs = ['all', 'upcoming', 'completed', 'cancelled'] as const;
 
 export default function AppointmentsScreen({ navigation }: any) {
   const [tab, setTab] = useState<(typeof tabs)[number]>('all');
+  const [appointmentList, setAppointmentList] = useState<Appointment[]>(appointments);
+  useEffect(() => {
+    api.getAppointments().then(setAppointmentList).catch(() => undefined);
+  }, []);
   const data =
-    tab === 'all' ? appointments : appointments.filter(a => a.status === tab);
+    tab === 'all'
+      ? appointmentList
+      : appointmentList.filter(a => a.status === tab);
   return (
     <View style={{ flex: 1, backgroundColor: colors.background }}>
       <Header title="Appointments" subtitle="Manage daily schedule" />

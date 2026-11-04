@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -16,6 +16,7 @@ import { AppIcon } from '../../components/AppIcon';
 import { colors, spacing, radius } from '../../theme';
 import { patients } from '../../utils/mockData';
 import { Patient } from '../../types';
+import { api } from '../../utils/api';
 
 const visitReasons = [
   'General check-up',
@@ -40,6 +41,11 @@ export default function PatientsScreen({ navigation }: any) {
     customCondition: '',
   });
   const [error, setError] = useState('');
+  useEffect(() => {
+    api.getPatients().then(setPatientList).catch(() => {
+      setError('Could not refresh patients from the API. Showing saved records.');
+    });
+  }, []);
   const filtered = patientList.filter(p =>
     p.name.toLowerCase().includes(q.toLowerCase()),
   );
@@ -59,7 +65,7 @@ export default function PatientsScreen({ navigation }: any) {
       customCondition: '',
     });
   };
-  const addPatient = () => {
+  const addPatient = async () => {
     const age = Number(form.age);
     const condition =
       form.condition === 'Other'
@@ -78,17 +84,22 @@ export default function PatientsScreen({ navigation }: any) {
       setError('Enter a valid age.');
       return;
     }
-    const newPatient: Patient = {
-      id: `patient-${Date.now()}`,
+    const newPatient = {
       name: form.name.trim(),
       age,
       gender: form.gender,
       phone: form.phone.trim(),
       condition,
-      lastVisit: 'New patient',
     };
-    setPatientList(current => [newPatient, ...current]);
-    closeForm();
+    try {
+      const savedPatient = await api.createPatient(newPatient);
+      setPatientList(current => [savedPatient, ...current]);
+      closeForm();
+    } catch (requestError) {
+      setError(
+        requestError instanceof Error ? requestError.message : 'Could not save patient.',
+      );
+    }
   };
 
   return (

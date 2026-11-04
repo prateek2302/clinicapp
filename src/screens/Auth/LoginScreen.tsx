@@ -9,6 +9,7 @@ import {
 import { AppIcon } from '../../components/AppIcon';
 import { colors, spacing, radius } from '../../theme';
 import { useAuthStore } from '../../store/useAuthStore';
+import { api } from '../../utils/api';
 
 const DEMO_EMAIL = 'demo@clinicapp.com';
 const DEMO_PASSWORD = 'Clinic@123';
@@ -19,16 +20,23 @@ export default function LoginScreen({ navigation }: any) {
   const [password, setPassword] = useState(DEMO_PASSWORD);
   const [error, setError] = useState('');
 
-  const handleLogin = () => {
-    if (
-      email.trim().toLowerCase() !== DEMO_EMAIL ||
-      password !== DEMO_PASSWORD
-    ) {
-      setError('Use the demo email and password shown below.');
-      return;
-    }
+  const [loading, setLoading] = useState(false);
+
+  const handleLogin = async () => {
+    setLoading(true);
     setError('');
-    login();
+    try {
+      const response = await api.login(email, password);
+      login(response.user.role);
+    } catch (requestError) {
+      setError(
+        requestError instanceof Error
+          ? requestError.message
+          : 'Unable to sign in. Start the ClinicApp API and try again.',
+      );
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -63,7 +71,7 @@ export default function LoginScreen({ navigation }: any) {
           placeholderTextColor={colors.textLight}
         />
         <TouchableOpacity style={styles.btn} onPress={handleLogin}>
-          <Text style={styles.btnText}>Sign In</Text>
+          <Text style={styles.btnText}>{loading ? 'Signing in…' : 'Sign In'}</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.signUpLink}
