@@ -8,11 +8,9 @@ require Pod::Executable.execute_command('node', ['-p',
 platform :ios, '15.1'
 prepare_react_native_project!
 
-linkage = ENV['USE_FRAMEWORKS']
-if linkage != nil
-  Pod::UI.puts "Configuring Pod with #{linkage}ally linked Frameworks".green
-  use_frameworks! :linkage => linkage.to_sym
-end
+linkage = ENV.fetch('USE_FRAMEWORKS', 'dynamic')
+Pod::UI.puts "Configuring Pod with #{linkage}ally linked Frameworks".green
+use_frameworks! :linkage => linkage.to_sym
 
 target 'clinicapp' do
   config = use_native_modules!
@@ -33,6 +31,10 @@ target 'clinicapp' do
     installer.pods_project.targets.each do |target|
       target.build_configurations.each do |build_config|
         build_config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '15.1'
+        build_config.build_settings['CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES'] = 'YES'
+        if target.name == 'react-native-razorpay'
+          build_config.build_settings['OTHER_LDFLAGS'] = '$(inherited) -framework Razorpay'
+        end
       end
     end
   end
